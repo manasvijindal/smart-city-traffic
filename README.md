@@ -25,7 +25,6 @@ To build a working prototype that applies AI techniques to predict traffic volum
 
 # 📦 Project Structure
 
-```text
 smart-city-traffic/
 ├── app.py                        # Streamlit dashboard (main app)
 ├── requirements.txt              # Dependencies
