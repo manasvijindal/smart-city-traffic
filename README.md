@@ -1,7 +1,3 @@
-Yes — here is the **full README in clean Markdown format**, ready for you to **copy-paste directly** into GitHub.
-
----
-
 # 🚦 Smart City Traffic Forecasting using Machine Learning
 
 This project is part of the **Smart City with Artificial Intelligence** lab assignment.
