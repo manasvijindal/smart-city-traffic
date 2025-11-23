@@ -1,4 +1,4 @@
-````markdown
+
 # Smart City Traffic Forecasting using Machine Learning
 
 This project is part of the **Smart City with Artificial Intelligence** lab assignment.  
@@ -6,13 +6,11 @@ It demonstrates how AI can be used for real-world smart-city applications such a
 
 > **Dataset → Preprocessing → ML Model → Evaluation → Streamlit Dashboard Deployment**
 
----
 
 # Aim
 
 To build a working prototype that applies AI techniques to predict traffic volume using real spatio-temporal urban data and deploy the results via a web-based dashboard.
 
----
 
 # Learning Objectives (as per assignment)
 
@@ -22,11 +20,9 @@ To build a working prototype that applies AI techniques to predict traffic volum
 - Deploy results as a **Streamlit dashboard**
 - Understand ethical, privacy, & deployment considerations
 
----
 
 # Project Structure
 
-```text
 smart-city-traffic/
 ├── app.py                        # Streamlit dashboard (main app)
 ├── requirements.txt              # Dependencies
@@ -200,4 +196,3 @@ The notebook includes:
 
 ```
 ::contentReference[oaicite:0]{index=0}
-```
