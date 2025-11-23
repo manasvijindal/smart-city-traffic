@@ -9,6 +9,35 @@ st.set_page_config(page_title="Smart City: Traffic Volume Prediction", layout="w
 
 # ---------- Load data & model ----------
 @st.cache_data
+def load_data():
+    df = pd.read_csv("data/Metro_Interstate_Traffic_Volume.csv")
+
+    df["date_time"] = pd.to_datetime(
+        df["date_time"],
+        format="%d-%m-%Y %H:%M",
+        errors="coerce"
+    )
+
+    # CLEANING
+    df = df[df["temp"] > 0]
+    df = df[df["rain_1h"] < 60]
+    df = df[df["snow_1h"] < 60]
+
+    # FIX HOLIDAY COLUMN
+    df["holiday"] = df["holiday"].fillna("None").astype(str)
+
+    # FIX WEATHER COLUMN TOO (same problem may happen)
+    df["weather_main"] = df["weather_main"].fillna("Unknown").astype(str)
+
+    # Feature engineering
+    df["hour"] = df["date_time"].dt.hour
+    df["month"] = df["date_time"].dt.month
+    df["dayofweek"] = df["date_time"].dt.dayofweek
+    df["year"] = df["date_time"].dt.year
+
+    return df
+
+@st.cache_data
 @st.cache_resource
 def load_model(df):
     from sklearn.compose import ColumnTransformer
@@ -44,44 +73,6 @@ def load_model(df):
 
     model.fit(X, y)
     return model
-
-# def load_data():
-#     df = pd.read_csv("data/Metro_Interstate_Traffic_Volume.csv")
-
-#     df["date_time"] = pd.to_datetime(
-#         df["date_time"],
-#         format="%d-%m-%Y %H:%M",
-#         errors="coerce"
-#     )
-
-#     # CLEANING
-#     df = df[df["temp"] > 0]
-#     df = df[df["rain_1h"] < 60]
-#     df = df[df["snow_1h"] < 60]
-
-#     # FIX HOLIDAY COLUMN
-#     df["holiday"] = df["holiday"].fillna("None").astype(str)
-
-#     # FIX WEATHER COLUMN TOO (same problem may happen)
-#     df["weather_main"] = df["weather_main"].fillna("Unknown").astype(str)
-
-#     # Feature engineering
-#     df["hour"] = df["date_time"].dt.hour
-#     df["month"] = df["date_time"].dt.month
-#     df["dayofweek"] = df["date_time"].dt.dayofweek
-#     df["year"] = df["date_time"].dt.year
-
-#     return df
-
-
-@st.cache_resource
-def load_model():
-    model_path = "models/rf_traffic_model.pkl"
-    if not os.path.exists(model_path):
-        st.error("Model file not found. Train the model notebook first.")
-        return None
-    return joblib.load(model_path)
-
 df = load_data()
 model = load_model(df)
 
