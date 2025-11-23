@@ -9,34 +9,69 @@ st.set_page_config(page_title="Smart City: Traffic Volume Prediction", layout="w
 
 # ---------- Load data & model ----------
 @st.cache_data
-@st.cache_data
-def load_data():
-    df = pd.read_csv("data/Metro_Interstate_Traffic_Volume.csv")
+@st.cache_resource
+def load_model(df):
+    from sklearn.compose import ColumnTransformer
+    from sklearn.preprocessing import OneHotEncoder
+    from sklearn.ensemble import RandomForestRegressor
+    from sklearn.pipeline import Pipeline
 
-    df["date_time"] = pd.to_datetime(
-        df["date_time"],
-        format="%d-%m-%Y %H:%M",
-        errors="coerce"
+    numeric_features = ["temp", "rain_1h", "snow_1h", "clouds_all", "hour", "month", "dayofweek", "year"]
+    categorical_features = ["holiday", "weather_main"]
+
+    X = df[numeric_features + categorical_features]
+    y = df["traffic_volume"]
+
+    preprocessor = ColumnTransformer(
+        transformers=[
+            ("num", "passthrough", numeric_features),
+            ("cat", OneHotEncoder(handle_unknown="ignore"), categorical_features),
+        ]
     )
 
-    # CLEANING
-    df = df[df["temp"] > 0]
-    df = df[df["rain_1h"] < 60]
-    df = df[df["snow_1h"] < 60]
+    rf = RandomForestRegressor(
+        n_estimators=80,      # smaller model, faster training
+        random_state=42,
+        n_jobs=-1,
+    )
 
-    # FIX HOLIDAY COLUMN
-    df["holiday"] = df["holiday"].fillna("None").astype(str)
+    model = Pipeline(
+        steps=[
+            ("preprocess", preprocessor),
+            ("rf", rf),
+        ]
+    )
 
-    # FIX WEATHER COLUMN TOO (same problem may happen)
-    df["weather_main"] = df["weather_main"].fillna("Unknown").astype(str)
+    model.fit(X, y)
+    return model
 
-    # Feature engineering
-    df["hour"] = df["date_time"].dt.hour
-    df["month"] = df["date_time"].dt.month
-    df["dayofweek"] = df["date_time"].dt.dayofweek
-    df["year"] = df["date_time"].dt.year
+# def load_data():
+#     df = pd.read_csv("data/Metro_Interstate_Traffic_Volume.csv")
 
-    return df
+#     df["date_time"] = pd.to_datetime(
+#         df["date_time"],
+#         format="%d-%m-%Y %H:%M",
+#         errors="coerce"
+#     )
+
+#     # CLEANING
+#     df = df[df["temp"] > 0]
+#     df = df[df["rain_1h"] < 60]
+#     df = df[df["snow_1h"] < 60]
+
+#     # FIX HOLIDAY COLUMN
+#     df["holiday"] = df["holiday"].fillna("None").astype(str)
+
+#     # FIX WEATHER COLUMN TOO (same problem may happen)
+#     df["weather_main"] = df["weather_main"].fillna("Unknown").astype(str)
+
+#     # Feature engineering
+#     df["hour"] = df["date_time"].dt.hour
+#     df["month"] = df["date_time"].dt.month
+#     df["dayofweek"] = df["date_time"].dt.dayofweek
+#     df["year"] = df["date_time"].dt.year
+
+#     return df
 
 
 @st.cache_resource
