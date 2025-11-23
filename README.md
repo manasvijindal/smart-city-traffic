@@ -183,7 +183,3 @@ Install via:
 ```bash
 pip install -r requirements.txt
 ```
-
----
-📌 A short version for submission
-🚀 A nicer GitHub README with badges and images
