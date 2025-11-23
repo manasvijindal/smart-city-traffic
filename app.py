@@ -83,7 +83,7 @@ def load_model():
     return joblib.load(model_path)
 
 df = load_data()
-model = load_model()
+model = load_model(df)
 
 st.title("🚦 Smart City: Traffic Volume Prediction on I-94")
 st.markdown(
